@@ -23,8 +23,31 @@ class StudyTrackApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatelessWidget {
+class Task {
+  String title;
+  bool completed;
+
+  Task({
+    required this.title,
+    this.completed = false,
+  });
+}
+
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  List<Task> tasks = [];
+
+  void addTask() {
+    setState(() {
+      tasks.add(Task(title: 'Estudiar Flutter'));
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,33 +55,40 @@ class HomeScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('StudyTrack'),
       ),
-      body: const Center(
-        child: Padding(
-          padding: EdgeInsets.all(24),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.school,
-                size: 80,
-                color: Colors.indigo,
+      body: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            const Text(
+              'Mis tareas',
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
               ),
-              SizedBox(height: 20),
-              Text(
-                'Organiza tareas',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 10),
-              Text(
-                'Registra tus actividades y tu progreso académico.',
-                textAlign: TextAlign.center,
-              ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 15),
+            ElevatedButton(
+              onPressed: addTask,
+              child: const Text('Agregar tarea'),
+            ),
+            Expanded(
+              child: tasks.isEmpty
+                  ? const Center(
+                      child: Text('Todavía no tienes tareas'),
+                    )
+                  : ListView.builder(
+                      itemCount: tasks.length,
+                      itemBuilder: (context, index) {
+                        return Card(
+                          child: ListTile(
+                            leading: const Icon(Icons.book),
+                            title: Text(tasks[index].title),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+          ],
         ),
       ),
     );
